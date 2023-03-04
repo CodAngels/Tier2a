@@ -39,6 +39,7 @@
 			<div>
 				<button class="{curr_selection ? 'enabled' : 'disabled'}" on:click={toggle_curr}>{curr_selection ? "Available": "Unavailable"}</button>
 			</div>
+			<button class="available" on:click={addToSelected}>Available</button>
 		</div>
 
 		<h3 class="TimeSlot">Time Slots Selected</h3>
@@ -60,7 +61,7 @@
 			
 	</div>
 </main>
-
+	
 <style>
 	.container{
 		position: relative;

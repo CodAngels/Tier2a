@@ -3,19 +3,28 @@
 
 	// There are 96 15 minute blocks in a day. There are 96 * 7 = 672 blocks in a week. 0 maps to 12:00 AM on Sunday, 671 maps to 11:45 PM on Saturday
 	// This array gives the number of blocks that are available to be booked (default is the entire week)
-	let valid_times = [...Array(672).keys()];
+	let valid_times = [];
+	// Initialize valid times to be 9 AM to 9 PM
+	for(let day = 0; day < 7; day++) {
+		for(let slot = 36; slot < 88; slot++) {
+			valid_times.push((day * 96) + slot);
+		}
+	}
 	let available_times = Array(672).fill(false);
 
 	let curr_slot = 0;
-	$: curr_selection = available_times[curr_slot]
-
-	function toggle_curr() {
-		curr_selection = !curr_selection;
-		available_times[curr_slot] = curr_selection;
-	}
+	$: curr_selection = valid_times[curr_slot]
 
 	let start_time = 0;
 	let end_time = 0;
+
+	function get_slots_in_day() {
+		for(let i = 1; i < valid_times.length; i++) {
+			if(valid_times[i] - valid_times[i - 1] != 1) {
+				return i;
+			}
+		}
+	}
 </script>
 
 <main>
@@ -37,21 +46,30 @@
 		<div class="selector">
 			<Selector {valid_times} bind:curr_slot={curr_slot}/>
 			<div>
-				<button class="{curr_selection ? 'enabled' : 'disabled'}" on:click={toggle_curr}>{curr_selection ? "Available": "Unavailable"}</button>
+				<button class="{available_times[curr_selection] ? 'enabled' : 'disabled'}" on:click={() => {available_times[curr_selection] = !available_times[curr_selection];}}>{available_times[curr_selection] ? "Available": "Unavailable"}</button>
 			</div>
-			<button class="available" on:click={toggle_curr}>Available</button>
 		</div>
 
 		<h3 class="TimeSlot">Time Slots Selected</h3>
 		<div class="selectedTimes">
-			<!-- Doesn't work right now, but probably want to use a different approach anyway so not spending more time debugging -->
-			{#each valid_times as time}
-				{#if available_times[valid_times] == true}
-					<div key={time}>{time}
-						<button on:click={() => available_times[valid_times] = false}>Delete</button>
-					</div>
-				{/if}
-			{/each}
+			<table>
+				<tr>
+					<td>Sun</td>
+					<td>Mon</td>
+					<td>Tue</td>
+					<td>Wed</td>
+					<td>Thu</td>
+					<td>Fri</td>
+					<td>Sat</td>
+				</tr>
+				{#each [...Array(get_slots_in_day()).keys()] as slot}
+					<tr>
+					{#each [...Array(7).keys()] as day}
+						<td class={available_times[(day * get_slots_in_day()) + slot + valid_times[0]] ? "available cell-" + (slot % 4) : "unavailable cell-" + (slot % 4)}></td>
+					{/each}
+					</tr>
+				{/each}
+			</table>
 		</div>
 
 		<div class="bottom-buttons">
@@ -92,6 +110,44 @@
         background-color: red;
         width: 100px;
     }
+
+	table {
+		border-collapse: collapse;
+	}
+
+	td {
+		text-align: center;
+        width: 35px;
+        height: 6px;
+		border-collapse: 0;
+		border: 2px solid black;
+    }
+
+    .available {
+        background-color: green;
+    }
+
+    .unavailable {
+        background-color: antiquewhite;
+    }
+
+	.cell-0 {
+		border-bottom: 0;
+	}
+
+	.cell-1 {
+		border-top: 0;
+		border-bottom: 1px solid black;
+	}
+
+	.cell-2 {
+		border-top: 1px solid black;
+		border-bottom: 0;
+	}
+
+	.cell-3 {
+		border-top: 0;
+	}
 
 	.bottom-buttons {
 		padding-top: 100px;

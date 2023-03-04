@@ -1,9 +1,4 @@
 <script>
-    let up_arrow = "./up_arrow.png";
-	let down_arrow = "./down_arrow.png";
-	let left_arrow = "./left_arrow.png";
-	let right_arrow = "./right_arrow.png";
-
     export let valid_times;
 	export let curr_slot = 0;
 
@@ -46,45 +41,66 @@
 	}
 </script>
 
-<div>
-    <div class="day">
-        <button on:click={decrement(96)}><img src={left_arrow} alt="Left Arrow"/></button>
-        <p class="day-display">{get_day(valid_times[curr_slot])}</p>
-        <button on:click={increment(96)}><img src={right_arrow} alt="Right Arrow"/></button>
+<div class="daytime-picker">
+    <div class="day-picker">
+        <button on:click={decrement(96)}>◄</button>
+        <span class="day-display">{get_day(valid_times[curr_slot])}</span>
+        <button on:click={increment(96)}>►</button>
     </div>
-    <p>Available Times</p>
-    <div class="time-buttons">
-        <button on:click={increment(4)}><img src={up_arrow} alt="Up Arrow"/></button>
-        <button on:click={increment(1)}><img src={up_arrow} alt="Up Arrow"/></button>
-    </div>
-    <p class="time-display">{get_hour(valid_times[curr_slot])}:{get_minute(valid_times[curr_slot])} {(valid_times[curr_slot] % 96) < 48 ? "AM" : "PM"}</p>
-    <div class="time-buttons">
-        <button on:click={decrement(4)}><img src={down_arrow} alt="Down Arrow"/></button>
-        <button on:click={decrement(1)}><img src={down_arrow} alt="Down Arrow"/></button>
-    </div>
+	<div class="time-picker">
+		<div class="hour-picker">
+			<button on:click={increment(4)}>▲</button>
+			<span>{get_hour(valid_times[curr_slot])}</span>
+			<button on:click={decrement(4)}>▼</button>
+		</div>
+		<span>:</span>
+		<div class="minute-picker">
+			<button on:click={increment(1)}>▲</button>
+			<span>{get_minute(valid_times[curr_slot])}</span>
+			<button on:click={decrement(1)}>▼</button>
+		</div>
+		<span>{(curr_slot % 96) < 48 ? "AM" : "PM"}</span>
+	</div>
 </div>
 
 <style>
-    .day {
-        display: flex;
-    }
+ 	.daytime-picker {
+    	display: flex;
+		flex-direction: column;
+    	align-items: center;
+    	gap: 1rem;
+	  	position: absolute;
+  		top: 30%;
+    	left: 30%;
+  	}
 
-    .time-display {
-        font-size: 28px;
-        margin: 0;
-    }
+	.time-picker {
+		display: flex;
+    	align-items: center;
+	}
 
-    .day-display {
-        font-size: 28px;
-        width: 150px;
-        max-width: 150px;
-    }
+  	.hour-picker,
+  	.minute-picker {
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
+    	gap: 0.5rem;
+  	}
 
-    .time-buttons {
-        padding-right: 55px;
-    }
+	.day-display {
+		width: 100px;
+		max-width: 100px;
+	}
 
-    img {
-		max-width: 10px;
+  	button {
+		font-size: 1rem;
+		padding: 0.25rem 0.5rem;
+		border-radius: 0.25rem;
+		border: 1px solid #ccc;
+		background-color: white;
+		cursor: pointer;
+  	}
+	button:focus {
+		outline: none;
 	}
 </style>

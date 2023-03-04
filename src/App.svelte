@@ -75,46 +75,45 @@
   }
 </script>
 <main >
-  	<h2><center>Meeting Name: CS178 Week 53 Meeting</center></h2>
-		<div class="container">
-  		<h3 class="selectPrompt">Select Availability(30-min Slots, 24hr clock System)</h3>
-  		<div class="time-picker">
-    		<div class="hour-hand">
-      		<button on:click={decrementHour}>▲</button>
-      			<span>{hour < 10 ? `0${hour}` : hour}</span>
-      		<button on:click={incrementHour}>▼</button>
-    		</div>
-    		<div class="minute-hand">
-      		<button on:click={decrementMinute}>▲</button>
-      			<span>{minute < 10 ? `0${minute}` : minute}</span>
-      		<button on:click={incrementMinute}>▼</button>
-    		</div>
-    		<div class="day-picker">
-      		<button on:click={decrementDay}>◄</button>
-      		<span>{day < 10 ? `0${day}` : day}</span>
-      		<button on:click={incrementDay}>►</button>
-    		</div>
-    		<button class="available" on:click={addToSelected}>Available</button>
-  		</div>
-			<h3 class="TimeSlot">Time Slots Selected</h3>
-  		<div class="selectedTimes">
-    		{#each selectedTimes as time}
-					<div key={time}>{time}
-						<button on:click={() => deleteTime(time)}>Delete
-						</button>
-					</div>
-   			{/each}
-  		</div>
-  		<div class="bottom-buttons">
-    		<button class="submit" on:click={() => {selectedTimes = []}}>Submit</button>
-  		</div>
+	<div class="container">
+		<h2><center>Meeting Name: CS178 Week 53 Meeting</center></h2>
+		<h3 class="selectPrompt">Select Availability(30-min Slots, 24hr clock System)</h3>
+		<div class="time-picker">
+			<div class="hour-hand">
+				<button on:click={decrementHour}>▲</button>
+					<span>{hour < 10 ? `0${hour}` : hour}</span>
+				<button on:click={incrementHour}>▼</button>
+			</div>
+			<div class="minute-hand">
+				<button on:click={decrementMinute}>▲</button>
+					<span>{minute < 10 ? `0${minute}` : minute}</span>
+				<button on:click={incrementMinute}>▼</button>
+			</div>
+			<div class="day-picker">
+				<button on:click={decrementDay}>◄</button>
+					<span>{day < 10 ? `0${day}` : day}</span>
+				<button on:click={incrementDay}>►</button>
+			</div>
+			<button class="available" on:click={addToSelected}>Available</button>
+		</div>
+		<h3 class="TimeSlot">Time Slots Selected</h3>
+		<div class="selectedTimes">
+			{#each selectedTimes as time}
+				<div key={time}>{time}
+					<button on:click={() => deleteTime(time)}>Delete</button>
+				</div>
+			{/each}
+		</div>
+		<div class="bottom-buttons">
+			<button class="submit" on:click={() => {selectedTimes = []}}>Submit</button>
+		</div>
 	</div>
 </main>
 	
 <style>
 	.container{
 		position: relative;
-    	height: 500px; 
+    	height: 700px; 
     	overflow: auto;
 	}
  	.time-picker {

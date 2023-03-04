@@ -1,147 +1,191 @@
 <script>
-	export let up_arrow = "./up_arrow.png";
-	export let down_arrow = "./down_arrow.png";
-	export let left_arrow = "./left_arrow.png";
-	export let right_arrow = "./right_arrow.png";
-
-	// There are 96 15 minute blocks in a day. There are 96 * 7 = 672 blocks in a week. 0 maps to 12:00 AM on Sunday, 671 maps to 11:45 PM on Saturday
-	// This array gives the number of blocks that are available to be booked (default is the entire week)
-	export let valid_times = [...Array(672).keys()];
-	export let available_times = Array(672).fill(false);
-	export let curr_slot = 0;
-
-	export let curr_selection = false;
-
-	const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-	function get_day(slot) {
-		return days[Math.floor(slot / 96)];
-	}
-	function get_hour(slot) {
-		let hour = Math.floor((slot % 96) / 4);
-		hour = hour > 12 ? hour - 12 : hour;
-		if(hour == 0) {
-			return 12;
-		}
-		return hour;
-	}
-
-	function get_minute(slot) {
-		let minutes = 15 * (slot % 4);
-		return minutes == 0 ? "00" : minutes;
-	}
-
-	function increment(delta) {
-		return function() {
-			curr_slot += delta;
-				if(curr_slot >= valid_times.length) {
-					curr_slot -= valid_times.length;
-				}
-			curr_selection = available_times[curr_slot];
-		}
-	}
-
-	function decrement(delta) {
-		return function() {
-			curr_slot -= delta;
-			if(curr_slot < 0) {
-				curr_slot += valid_times.length;
-			}
-			curr_selection = available_times[curr_slot];
-		}
-	}
-
-	function toggle_curr() {
-		curr_selection = !curr_selection;
-		available_times[curr_slot] = curr_selection;
-	}
-</script>
-
-<main>
-	<div class="selector">
-		<div>
-			<div class="day">
-				<button on:click={decrement(96)}><img src={left_arrow} alt="Left Arrow"/></button>
-				<p class="time-display">{get_day(valid_times[curr_slot])}</p>
-				<button on:click={increment(96)}><img src={right_arrow} alt="Right Arrow"/></button>
-			</div>
-			<p>Available Times</p>
-			<div class="time-buttons">
-				<button on:click={increment(4)}><img src={up_arrow} alt="Up Arrow"/></button>
-				<button on:click={increment(1)}><img src={up_arrow} alt="Up Arrow"/></button>
-			</div>
-			<p class="time-display">{get_hour(valid_times[curr_slot])}:{get_minute(valid_times[curr_slot])} {(valid_times[curr_slot] % 96) < 48 ? "AM" : "PM"}</p>
-			<div class="time-buttons">
-				<button on:click={decrement(4)}><img src={down_arrow} alt="Down Arrow"/></button>
-				<button on:click={decrement(1)}><img src={down_arrow} alt="Down Arrow"/></button>
-			</div>
-		</div>
-		<div>
-			<button class="{curr_selection ? 'enabled' : 'disabled'}" on:click={toggle_curr}>{curr_selection ? "Available": "Unavailable"}</button>
-		</div>
-	</div>
-
-	<div class="bottom-buttons">
-		<button class="submit">Submit</button>
-		<button class="share">Share</button>
-	</div>
+	import { onMount } from 'svelte';
+  	let time = new Date();
+  	let hour = time.getHours();
+  	let minute = Math.floor(time.getMinutes() / 15) * 15;
+	let week = ["Sun", "Mon","Tue", "Wed","Thu","Frid", "Sat"];
+	let dayIndex = 0;
+	let day = week[dayIndex];
+	let selectedTimes = [];
 	
+	const incrementDay = () => {
+    dayIndex = (dayIndex + 1) % 7;
+    day = week[dayIndex];
+    updateTime();
+  };
+	
+	const decrementDay = () => {
+    dayIndex = (dayIndex - 1+7) % 7;
+    day = week[dayIndex];
+    updateTime();
+  };
+
+  const incrementHour = () => {
+    if (hour === 23) {
+      hour = 0;
+    } else {
+      hour++;
+    }
+    updateTime();
+  };
+
+  const decrementHour = () => {
+    if (hour === 0) {
+      hour = 23;
+    } else {
+      hour--;
+    }
+    updateTime();
+  };
+
+  const incrementMinute = () => {
+    if (minute === 45) {
+      minute = 0;
+      incrementHour();
+    } else {
+      minute += 15;
+    }
+    updateTime();
+  };
+	const decrementMinute = () => {
+    if (minute === 0) {
+      minute = 45;
+      decrementHour();
+    } else {
+      minute -= 15;
+    }
+    updateTime();
+  };
+  const updateTime = () => {
+    time.setHours(hour);
+    time.setMinutes(minute);
+		time.setDate(time.getDate() + (dayOfWeek - time.getDay() + 7) % 7);
+  };
+	function addToSelected() {
+    const selected = `${day}  ${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`;
+    if (!selectedTimes.includes(selected)) {
+    selectedTimes = [...selectedTimes, selected];
+  }
+  }
+	function deleteTime(time) {
+  	selectedTimes = selectedTimes.filter(t => t !== time);
+	}
+	function clearSelectedTimes() {
+    	selectedTimes = [];
+  }
+</script>
+<main >
+  	<h2><center>Meeting Name: CS178 Week 53 Meeting</center></h2>
+		<div class="container">
+  		<h3 class="selectPrompt">Select Availability(30-min Slots, 24hr clock System)</h3>
+  		<div class="time-picker">
+    		<div class="hour-hand">
+      		<button on:click={decrementHour}>▲</button>
+      			<span>{hour < 10 ? `0${hour}` : hour}</span>
+      		<button on:click={incrementHour}>▼</button>
+    		</div>
+    		<div class="minute-hand">
+      		<button on:click={decrementMinute}>▲</button>
+      			<span>{minute < 10 ? `0${minute}` : minute}</span>
+      		<button on:click={incrementMinute}>▼</button>
+    		</div>
+    		<div class="day-picker">
+      		<button on:click={decrementDay}>◄</button>
+      		<span>{day < 10 ? `0${day}` : day}</span>
+      		<button on:click={incrementDay}>►</button>
+    		</div>
+    		<button class="available" on:click={addToSelected}>Available</button>
+  		</div>
+			<h3 class="TimeSlot">Time Slots Selected</h3>
+  		<div class="selectedTimes">
+    		{#each selectedTimes as time}
+					<div key={time}>{time}
+						<button on:click={() => deleteTime(time)}>Delete
+						</button>
+					</div>
+   			{/each}
+  		</div>
+  		<div class="bottom-buttons">
+    		<button class="submit" on:click={() => {selectedTimes = []}}>Submit</button>
+  		</div>
+	</div>
 </main>
-
+	
 <style>
-	main {
-		text-align: center;
+	.container{
+		position: relative;
+    	height: 500px; 
+    	overflow: auto;
 	}
+ 	.time-picker {
+    	display: flex;
+    	align-items: center;
+    	gap: 1rem;
+	  	position: absolute;
+  		top: 30%;
+    	left: 30%;
+    	transform: translate(-50%, -50%);
+  	}
 
-	.selector {
-		justify-content: center;
-		width: 100%;
+  	.hour-hand,
+  	.minute-hand {
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
+    	gap: 0.5rem;
+  	}
+	.selectPrompt {
+		position: relative;
+  		bottom: 100;
+  		left: 20%;
+  		margin: 25px;
+		overflow-y: auto;
+	}
+	.TimeSlot{
 		display: flex;
-		padding-top: 240px;
+    	align-items: center;
+    	gap: 1rem;
+	 	position: absolute;
+  		top: 40%;
+    	left: 33%;
+    	transform: translate(-80%, 140%);
+	}
+	.selectedTimes{
+    align-items: down;
+    gap: 1rem;
+	  position: absolute;
+  	top: 60%;
+    left: 32%;
+    transform: translate(-80%, 0%);
 	}
 
-	.day {
-		display:flex;
-	}
-
-	.time-display {
-		margin: 0;
-	}
-
-	.time-buttons {
-		padding-right: 50px;
-	}
-
-	.enabled {
-		background-color: green;
-		margin-left: 2px;
-		margin-top: 132px;
-	}
-
-	.disabled {
-		background-color: red;
-		margin-left: 2px;
-		margin-top: 132px;
-	}
-
+  button {
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+  }
 	.bottom-buttons {
-		padding-top: 100px;
-		width: 80%;
+  	position: fixed;
+  	bottom: 0;
+  	left: 50%;
+  	margin: 20px;
+		overflow-y: auto;
 	}
-
-	.submit {
-		float: center;
+	.available{
+		position: fixed;
+  	bottom: 22;
+  	left: 59%;
+  	margin: 110px;
+		background-color:green;
 	}
-
-	.share {
-		float: right;
-	}
-
-	.time-display {
-		font-size: 28px;
-	}
-
-	img {
-		max-width: 10px;
-	}
+  button:focus {
+    outline: none;
+  }
+  span {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
 </style>

@@ -1,190 +1,108 @@
 <script>
-	import { onMount } from 'svelte';
-  	let time = new Date();
-  	let hour = time.getHours();
-  	let minute = Math.floor(time.getMinutes() / 15) * 15;
-	let week = ["Sun", "Mon","Tue", "Wed","Thu","Frid", "Sat"];
-	let dayIndex = 0;
-	let day = week[dayIndex];
-	let selectedTimes = [];
-	
-	const incrementDay = () => {
-    dayIndex = (dayIndex + 1) % 7;
-    day = week[dayIndex];
-    updateTime();
-  };
-	
-	const decrementDay = () => {
-    dayIndex = (dayIndex - 1+7) % 7;
-    day = week[dayIndex];
-    updateTime();
-  };
+	import Selector from './Selector.svelte';
 
-  const incrementHour = () => {
-    if (hour === 23) {
-      hour = 0;
-    } else {
-      hour++;
-    }
-    updateTime();
-  };
+	// There are 96 15 minute blocks in a day. There are 96 * 7 = 672 blocks in a week. 0 maps to 12:00 AM on Sunday, 671 maps to 11:45 PM on Saturday
+	// This array gives the number of blocks that are available to be booked (default is the entire week)
+	let valid_times = [...Array(672).keys()];
+	let available_times = Array(672).fill(false);
 
-  const decrementHour = () => {
-    if (hour === 0) {
-      hour = 23;
-    } else {
-      hour--;
-    }
-    updateTime();
-  };
+	let curr_slot = 0;
+	$: curr_selection = available_times[curr_slot]
 
-  const incrementMinute = () => {
-    if (minute === 45) {
-      minute = 0;
-      incrementHour();
-    } else {
-      minute += 15;
-    }
-    updateTime();
-  };
-	const decrementMinute = () => {
-    if (minute === 0) {
-      minute = 45;
-      decrementHour();
-    } else {
-      minute -= 15;
-    }
-    updateTime();
-  };
-  const updateTime = () => {
-    time.setHours(hour);
-    time.setMinutes(minute);
-		time.setDate(time.getDate() + (dayOfWeek - time.getDay() + 7) % 7);
-  };
-	function addToSelected() {
-    const selected = `${day}  ${hour < 10 ? `0${hour}` : hour}:${minute < 10 ? `0${minute}` : minute}`;
-    if (!selectedTimes.includes(selected)) {
-    selectedTimes = [...selectedTimes, selected];
-  }
-  }
-	function deleteTime(time) {
-  	selectedTimes = selectedTimes.filter(t => t !== time);
+	function toggle_curr() {
+		curr_selection = !curr_selection;
+		available_times[curr_slot] = curr_selection;
 	}
-	function clearSelectedTimes() {
-    	selectedTimes = [];
-  }
+
+	let start_time = 0;
+	let end_time = 0;
 </script>
-<main >
+
+<main>
 	<div class="container">
-		<h2><center>Meeting Name: CS178 Week 53 Meeting</center></h2>
-		<h3 class="selectPrompt">Select Availability(30-min Slots, 24hr clock System)</h3>
-		<div class="time-picker">
-			<div class="hour-hand">
-				<button on:click={decrementHour}>▲</button>
-					<span>{hour < 10 ? `0${hour}` : hour}</span>
-				<button on:click={incrementHour}>▼</button>
+		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
+		<!-- <div>
+			<p>Add Conflicting Event</p>
+			<div>
+				<p>Start Time</p>
+				<Selector {valid_times} bind:start_time={curr_slot}/>
 			</div>
-			<div class="minute-hand">
-				<button on:click={decrementMinute}>▲</button>
-					<span>{minute < 10 ? `0${minute}` : minute}</span>
-				<button on:click={incrementMinute}>▼</button>
+			<div>
+				<p>End Time</p>
+				<Selector {valid_times} bind:end_time={curr_slot}/>
 			</div>
-			<div class="day-picker">
-				<button on:click={decrementDay}>◄</button>
-					<span>{day < 10 ? `0${day}` : day}</span>
-				<button on:click={incrementDay}>►</button>
+		</div> -->
+		<h3 class="select-prompt">Select Availability</h3>
+
+		<div class="selector">
+			<Selector {valid_times} bind:curr_slot={curr_slot}/>
+			<div>
+				<button class="{curr_selection ? 'enabled' : 'disabled'}" on:click={toggle_curr}>{curr_selection ? "Available": "Unavailable"}</button>
 			</div>
 			<button class="available" on:click={addToSelected}>Available</button>
 		</div>
+
 		<h3 class="TimeSlot">Time Slots Selected</h3>
 		<div class="selectedTimes">
-			{#each selectedTimes as time}
-				<div key={time}>{time}
-					<button on:click={() => deleteTime(time)}>Delete</button>
-				</div>
+			<!-- Doesn't work right now, but probably want to use a different approach anyway so not spending more time debugging -->
+			{#each valid_times as time}
+				{#if available_times[valid_times] == true}
+					<div key={time}>{time}
+						<button on:click={() => available_times[valid_times] = false}>Delete</button>
+					</div>
+				{/if}
 			{/each}
 		</div>
+
 		<div class="bottom-buttons">
-			<button class="submit" on:click={() => {selectedTimes = []}}>Submit</button>
+			<button class="submit">Submit</button>
+			<button class="share">Share</button>
 		</div>
+			
 	</div>
 </main>
 	
 <style>
 	.container{
 		position: relative;
-    	height: 700px; 
     	overflow: auto;
 	}
- 	.time-picker {
-    	display: flex;
-    	align-items: center;
-    	gap: 1rem;
-	  	position: absolute;
-  		top: 30%;
-    	left: 30%;
-    	transform: translate(-50%, -50%);
-  	}
 
-  	.hour-hand,
-  	.minute-hand {
-    	display: flex;
-    	flex-direction: column;
-    	align-items: center;
-    	gap: 0.5rem;
-  	}
-	.selectPrompt {
+	.select-prompt {
 		position: relative;
   		bottom: 100;
   		left: 20%;
   		margin: 25px;
 		overflow-y: auto;
 	}
-	.TimeSlot{
-		display: flex;
-    	align-items: center;
-    	gap: 1rem;
-	 	position: absolute;
-  		top: 40%;
-    	left: 33%;
-    	transform: translate(-80%, 140%);
-	}
-	.selectedTimes{
-    align-items: down;
-    gap: 1rem;
-	  position: absolute;
-  	top: 60%;
-    left: 32%;
-    transform: translate(-80%, 0%);
+
+	.selector {
+        justify-content: center;
+        width: 100%;
+        display: flex;
+        padding-top: 240px;
+    }
+
+	.enabled {
+        background-color: green;
+        width: 100px;
+    }
+
+    .disabled {
+        background-color: red;
+        width: 100px;
+    }
+
+	.bottom-buttons {
+		padding-top: 100px;
+		width: 80%;
 	}
 
-  button {
-    font-size: 1rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    border: 1px solid #ccc;
-    background-color: white;
-    cursor: pointer;
-  }
-	.bottom-buttons {
-  	position: fixed;
-  	bottom: 0;
-  	left: 50%;
-  	margin: 20px;
-		overflow-y: auto;
+	.submit {
+		float: center;
 	}
-	.available{
-		position: fixed;
-  	bottom: 22;
-  	left: 59%;
-  	margin: 110px;
-		background-color:green;
+
+	.share {
+		float: right;
 	}
-  button:focus {
-    outline: none;
-  }
-  span {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
 </style>

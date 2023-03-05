@@ -13,11 +13,11 @@
 	}
 
     function get_day(slot) {
-		return days[Math.floor(slot / 96)];
+		return days[Math.floor(slot / 48)];
 	}
 
 	function get_hour(slot) {
-		let hour = Math.floor((slot % 96) / 4);
+		let hour = Math.floor((slot % 48) / 2);
 		hour = hour > 12 ? hour - 12 : hour;
 		if(hour == 0) {
 			return 12;
@@ -26,7 +26,7 @@
 	}
 
 	function get_minute(slot) {
-		let minutes = 15 * (slot % 4);
+		let minutes = 30 * (slot % 2);
 		return minutes == 0 ? "00" : minutes;
 	}
 
@@ -67,7 +67,7 @@
 			<span>{get_minute(valid_times[curr_slot])}</span>
 			<button on:click={decrement(1)}>▼</button>
 		</div>
-		<span>{(valid_times[curr_slot] % 96) < 48 ? "AM" : "PM"}</span>
+		<span>{(valid_times[curr_slot] % 48) < 24 ? "AM" : "PM"}</span>
 	</div>
 </div>
 
@@ -77,9 +77,6 @@
 		flex-direction: column;
     	align-items: center;
     	gap: 1rem;
-	  	position: absolute;
-  		top: 30%;
-    	left: 30%;
   	}
 
 	.time-picker {

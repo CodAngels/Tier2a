@@ -34,11 +34,11 @@
 			<h3>Mark Available Block</h3>
 			<div>
 				<p>Start Time</p>
-				<Selector {valid_times} bind:curr_slot={curr_slot}/>
+				<Selector {valid_times} bind:start_time={curr_slot}/>
 			</div>
 			<div>
 				<p>End Time</p>
-				<Selector {valid_times} bind:curr_slot={curr_slot}/>
+				<Selector {valid_times} bind:end_time={curr_slot}/>
 			</div>
 		</div>
 		<h3 class="select-prompt">Select Availability</h3>

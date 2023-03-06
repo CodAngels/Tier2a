@@ -54,7 +54,7 @@
         started = true;
         start_time = Date.now()
         if(curr_name == "") {
-            curr_name = "."
+            curr_name = "empty"
         }
     }
 
@@ -225,7 +225,7 @@
 	}
 
 	.grad-5 {
-		background-color: "#79bbc2";
+		background-color: #79bbc2;
 	}
 
 	.grad-6 {

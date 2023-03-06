@@ -97,6 +97,10 @@
     	gap: 0.5rem;
   	}
 
+	.day-picker {
+		white-space: nowrap;
+	}
+
 	.day-display {
 		display: inline-block;
 		width: 85px;

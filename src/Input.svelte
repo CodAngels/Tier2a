@@ -74,8 +74,13 @@
 
 	function timeblock(val){
 		return () => {
-			for (let i = start_time; i < end_time+1; i ++) {
+			let i = start_time;
+			while(i != end_time) {
 				available_times[valid_times[i]] = val;
+				i += 1
+				if(i == valid_times.length) {
+					i = 0
+				}
 			}
 		}	
 	}

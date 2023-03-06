@@ -58,17 +58,7 @@
         }
     }
 
-    function finish(event) {
-        function pad(n, z) {
-            z = z || 2;
-            return ('00' + n).slice(-z);
-        }
-
-        let time_taken_ms = event.detail.end_time - start_time;
-        let time_taken_s = Math.floor(time_taken_ms / 1000)
-        let time_taken_m = Math.floor(time_taken_s / 1000)
-        let time_taken = pad(time_taken_m) + ":" + pad(time_taken_s % 60) + "." + pad(time_taken_ms % 1000, 3)
-        
+    function finish(event) { 
         let submitted_times = event.detail.times.reduce(function(arr, e, i) {
             if(e) arr.push(i);
             return arr;
@@ -76,12 +66,13 @@
 
         set(ref(db, 'submissions/' + curr_name), {
             name: curr_name,
-            time_taken: time_taken,
+            start_time: start_time,
+            end_time: event.detail.end_time,
             times: submitted_times
         });
 
-        console.log(curr_name + ',' + time_taken)
         fill_availability()
+        console.log(curr_name + "," + start_time + "," + event.detail.end_time + "," + (event.detail.end_time-start_time))
         
         curr_name = "";
         started = false;

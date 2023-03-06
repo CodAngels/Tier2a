@@ -3,17 +3,20 @@
 	import Selector from './Selector.svelte';
 
 	const dispatch = createEventDispatcher();
+	const time_slot = 15;
+	const slots_per_hour = 60 / time_slot
+	const slots_per_day = 24 * slots_per_hour;
 
 	// There are 96 30 minute blocks in a day. There are 96 * 7 = 672 blocks in a week. 0 maps to 12:00 AM on Sunday, 335  maps to 11:30 PM on Saturday
 	// This array gives the number of blocks that are available to be booked (default is the entire week)
 	let valid_times = [];
 	// Initialize valid times to be 9 AM to 9 PM
 	for(let day = 0; day < 7; day++) {
-		for(let slot = 18; slot < 38; slot++) {
-			valid_times.push((day * 48) + slot);
+		for(let slot = 9 * slots_per_hour; slot < 19 * slots_per_hour; slot++) {
+			valid_times.push((day * slots_per_day) + slot);
 		}
 	}
-	let available_times = Array(336).fill(false);
+	let available_times = Array(slots_per_day * 7).fill(false);
 
 	let curr_slot = 0;
 	$: curr_selection = valid_times[curr_slot]
@@ -61,8 +64,12 @@
 	}
 
 	function get_formatted_time_from_slot(slot) {
-		let hour = Math.floor(((slot + valid_times[0]) % 48) / 2);
-		let minutes = slot % 2 ? ":00" : ":30"
+		let minutes = ":" + (time_slot * (slot % slots_per_hour))
+		if(minutes == 0) {
+			minutes = ":00"
+		}
+
+		let hour = Math.floor(((slot + valid_times[0]) % slots_per_hour) / 4);
 		if(hour > 12) {
 			return (hour - 12) + minutes + " PM"
 		}
@@ -124,14 +131,16 @@
 				</tr>
 				{#each Array(get_slots_in_day()) as _, slot}
 					<tr>
-						<td class="display-times">
-							{get_formatted_time_from_slot(slot)}
-						</td>
+						{#if slot % 2 == 0}
+							<td rowspan="2" class="display-times">
+								{get_formatted_time_from_slot(slot)}
+							</td>
+						{/if}
 						{#each Array(7) as _, day}
-							<td class="{available_times[(day * 48) + slot + valid_times[0]] ? "available" : ""} {(day * 48) + slot + valid_times[0] == curr_selection ? "selected" : ""} {slot % 2}"
-								on:mousedown={start_drag((day * 48) + slot + valid_times[0])}
-								on:mouseover={check_drag((day * 48) + slot + valid_times[0])}
-								on:focus={check_drag((day * 48) + slot + valid_times[0])}>
+							<td class="slots {available_times[(day * slots_per_day) + slot + valid_times[0]] ? "available" : ""} {(day * slots_per_day) + slot + valid_times[0] == curr_selection ? "selected" : ""} cell-{slot % slots_per_hour}"
+								on:mousedown={start_drag((day * slots_per_day) + slot + valid_times[0])}
+								on:mouseover={check_drag((day * slots_per_day) + slot + valid_times[0])}
+								on:focus={check_drag((day * slots_per_day) + slot + valid_times[0])}>
 							</td>
 						{/each}
 					</tr>
@@ -204,6 +213,10 @@
 		background-color: #F3F8F2;
     }
 
+	.slots {
+		height: 14px;
+	}
+
 	.display-times {
 		font-size: 9px;
 	}
@@ -213,11 +226,21 @@
     }
 
 	.cell-0 {
-		border-bottom: 1px solid black;
+		border-bottom: 0;
 	}
 
 	.cell-1 {
+		border-top: 0;
+		border-bottom: 1px solid black;
+	}
+
+	.cell-2 {
 		border-top: 1px solid black;
+		border-bottom: 0;
+	}
+
+	.cell-3 {
+		border-top: 0;
 	}
 
 	.selected {

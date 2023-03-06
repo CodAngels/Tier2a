@@ -85,7 +85,7 @@
 	<div class="container">
 		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
 		<div class="timeblock">
-			<h3>Select Available Time Block</h3>
+			<h3>Select Available Time in Blocks</h3>
 			<div>
 				<h3>Start Time</h3>
 				<!-- {start_time} -->
@@ -193,7 +193,7 @@
 		border: 0;
 		margin: 0;
 		padding: 0;
-		width: 100%;
+		width: 50%;
 		height: 100%;
 		border-radius: 0;
 	}
@@ -252,7 +252,7 @@
 	.bottom-buttons {
 		padding-top: 100px;
 		padding-bottom: 30px;
-		width: 50%;
+		width: 25%;
 		left: 50%;
 		transform: translateY(30%);
 		transform: translateX(50%);

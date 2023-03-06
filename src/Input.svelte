@@ -62,7 +62,7 @@
 
 	function get_formatted_time_from_slot(slot) {
 		let hour = Math.floor(((slot + valid_times[0]) % 48) / 2);
-		let minutes = slot % 2 ? ":00" : ":30"
+		let minutes = slot % 2 ? ":30" : ":00"
 		if(hour > 12) {
 			return (hour - 12) + minutes + " PM"
 		}
@@ -75,7 +75,7 @@
 	}
 
 	function timeblock(){
-		for (let i = start_time; i < end_time; i ++) {
+		for (let i = start_time; i < end_time+1; i ++) {
 			available_times[valid_times[i]] = true;
 		}
 	}
@@ -84,16 +84,16 @@
 <main on:mouseup={() => {dragging = 0;}}>
 	<div class="container">
 		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
-		<div>
+		<div class="timeblock">
 			<h3>Mark Available Block</h3>
 			<div>
-				<p>Start Time</p>
-				{start_time}
+				<h3>Start Time</h3>
+				<!-- {start_time} -->
 				<Selector {valid_times} bind:curr_slot={start_time}/>
 			</div>
 			<div>
-				<p>End Time</p>
-				{end_time}
+				<h3>End Time</h3>
+				<!-- {end_time} -->
 				<Selector {valid_times} bind:curr_slot={end_time}/>
 			</div>
 			<div>
@@ -153,6 +153,9 @@
 		position: relative;
     	overflow: auto;
 		user-select: none;
+	}
+	.timeblock{
+		display:inline-block;
 	}
 
 	.select-prompt {

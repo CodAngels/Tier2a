@@ -75,7 +75,7 @@
 	}
 </script>
 
-<main>
+<main on:mouseup={() => {dragging = 0;}}>
 	<div class="container">
 		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
 		<div>
@@ -122,8 +122,7 @@
 							<td class="{available_times[(day * 48) + slot + valid_times[0]] ? "available" : ""} {(day * 48) + slot + valid_times[0] == curr_selection ? "selected" : ""} {slot % 2}"
 								on:mousedown={start_drag((day * 48) + slot + valid_times[0])}
 								on:mouseover={check_drag((day * 48) + slot + valid_times[0])}
-								on:focus={check_drag((day * 48) + slot + valid_times[0])}
-								on:mouseup={() => {dragging = 0;}}>
+								on:focus={check_drag((day * 48) + slot + valid_times[0])}>
 							</td>
 						{/each}
 					</tr>
@@ -159,7 +158,6 @@
         justify-content: center;
         width: 100%;
         display: flex;
-        padding-top: 240px;
     }
 
 	.enabled {

@@ -85,7 +85,7 @@
 	<div class="container">
 		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
 		<div class="timeblock">
-			<h3>Mark Available Block</h3>
+			<h3>Select Available Time Block</h3>
 			<div>
 				<h3>Start Time</h3>
 				<!-- {start_time} -->
@@ -97,10 +97,10 @@
 				<Selector {valid_times} bind:curr_slot={end_time}/>
 			</div>
 			<div>
-				<button on:click={timeblock}>Submit</button>
+				<button on:click={timeblock}>Add Time Block</button>
 			</div>
 		</div>
-		<h3 class="select-prompt">Select Availability</h3>
+		<h2 class="select-prompt">Select Availability</h2>
 
 		<div class="selector">
 			<Selector {valid_times} bind:curr_slot={curr_slot}/>
@@ -109,7 +109,7 @@
 			</div>
 		</div>
 
-		<h3 class="TimeSlot">Time Slots Selected</h3>
+		<h3 class="timeSlot">Time Slots Selected</h3>
 		<div class="selectedTimes">
 			<table>
 				<tr>
@@ -140,8 +140,7 @@
 		</div>
 
 		<div class="bottom-buttons">
-			<button class="submit" on:click={finish}>Submit</button>
-			<button class="share">Share</button>
+			<button on:click={finish}>Submit</button>
 		</div>
 			
 	</div>
@@ -159,16 +158,21 @@
 	}
 
 	.select-prompt {
-		position: relative;
-  		bottom: 100;
-  		left: 20%;
-  		margin: 25px;
-		overflow-y: auto;
+		position: absolute;
+		top: 30%; 
+		border-radius: 20px;
+		left: 45%; 
+		transform: translateX(-50%);
 	}
 
 	.selector {
+		position: absolute;
+		display: inline-block;
+		top: 40%; 
+		left: 50%; 
+		transform: translateX(-50%);
         justify-content: center;
-        width: 100%;
+        width: 30%;
         display: flex;
     }
 
@@ -193,6 +197,23 @@
 		height: 100%;
 		border-radius: 0;
 	}
+	.timeSlot{
+		position: absolute;
+		display: inline-block;
+		top: 6%; 
+		left: 60%; 
+		transform: translateX(100%);
+	}
+	.selectedTimes{
+		position: absolute;
+		display: inline-block;
+		top: 13.5%; 
+		left: 50%; 
+		transform: translateX(50%);
+	}
+	/* .block{
+
+	} */
 
 	table {
 		border-collapse: collapse;
@@ -230,7 +251,11 @@
 
 	.bottom-buttons {
 		padding-top: 100px;
-		width: 80%;
+		padding-bottom: 30px;
+		width: 50%;
+		left: 50%;
+		transform: translateY(30%);
+		transform: translateX(50%);
 	}
 
 	.submit {

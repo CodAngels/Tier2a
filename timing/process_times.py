@@ -2,7 +2,7 @@ import json, datetime
 
 data = json.loads(open("timing/cs178-tier-2a-default-rtdb-export.json").read())
 with open("timing/times.csv", "w") as f:
-    f.write("Name,Start Time,End Time,Time Taken\n")
+    f.write("Name,Start Time,End Time,Duration\n")
     for _, user in data["submissions"].items():
         time_elapsed_ms = user["end_time"] - user["start_time"]
         f.write(str(user["name"]) + "," + 

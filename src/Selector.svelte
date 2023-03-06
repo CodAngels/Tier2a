@@ -57,9 +57,9 @@
     </div>
 	<div class="time-picker">
 		<div class="hour-picker">
-			<button on:click={increment(4)}>▲</button>
+			<button on:click={increment(2)}>▲</button>
 			<span>{get_hour(valid_times[curr_slot])}</span>
-			<button on:click={decrement(4)}>▼</button>
+			<button on:click={decrement(2)}>▼</button>
 		</div>
 		<span>:</span>
 		<div class="minute-picker">

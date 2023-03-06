@@ -73,6 +73,12 @@
 			return hour + minutes + " AM"
 		}
 	}
+
+	function timeblock(){
+		for (let i = start_time; i < end_time; i ++) {
+			available_times[valid_times[i]] = true;
+		}
+	}
 </script>
 
 <main on:mouseup={() => {dragging = 0;}}>
@@ -89,6 +95,9 @@
 				<p>End Time</p>
 				{end_time}
 				<Selector {valid_times} bind:curr_slot={end_time}/>
+			</div>
+			<div>
+				<button on:click={timeblock}>Submit</button>
 			</div>
 		</div>
 		<h3 class="select-prompt">Select Availability</h3>

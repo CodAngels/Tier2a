@@ -216,17 +216,6 @@
 		margin-top: 93%;
     }
 
-	.slot-toggle,
-	.slot-toggle:focus {
-		background-color: transparent;
-		border: 0;
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		height: 100%;
-		border-radius: 0;
-	}
-
 	.selected-times{
 		display: flex;
 		flex-direction: column;

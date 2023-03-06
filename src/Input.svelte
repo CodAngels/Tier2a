@@ -61,7 +61,6 @@
 		minutes = minutes == 0 ? ":00" : (":" + minutes)
 
 		let hour = Math.floor(((slot + valid_times[0]) % slots_per_day) / slots_per_hour);
-		console.log(slot + " " + hour);
 		if(hour > 12) {
 			return (hour - 12) + minutes + " PM"
 		}

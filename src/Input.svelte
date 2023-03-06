@@ -6,16 +6,10 @@
 	const time_slot = 15;
 	const slots_per_hour = 60 / time_slot
 	const slots_per_day = 24 * slots_per_hour;
+	const gradient = ["#f3f8f2", "#deece2", "#c6e0d5", "#add4cb", "#93c8c5", "#79bbc2", "#60aec0", "#4aa0be", "#3a91bc", "#3581b8"]
 
-	// There are 96 30 minute blocks in a day. There are 96 * 7 = 672 blocks in a week. 0 maps to 12:00 AM on Sunday, 335  maps to 11:30 PM on Saturday
-	// This array gives the number of blocks that are available to be booked (default is the entire week)
-	let valid_times = [];
-	// Initialize valid times to be 9 AM to 9 PM
-	for(let day = 0; day < 7; day++) {
-		for(let slot = 9 * slots_per_hour; slot < 19 * slots_per_hour; slot++) {
-			valid_times.push((day * slots_per_day) + slot);
-		}
-	}
+	export let valid_times;
+
 	let available_times = Array(slots_per_day * 7).fill(false);
 
 	let curr_slot = 0;
@@ -64,12 +58,11 @@
 	}
 
 	function get_formatted_time_from_slot(slot) {
-		let minutes = ":" + (time_slot * (slot % slots_per_hour))
-		if(minutes == 0) {
-			minutes = ":00"
-		}
+		let minutes = (time_slot * (slot % slots_per_hour))
+		minutes = minutes == 0 ? ":00" : (":" + minutes)
 
-		let hour = Math.floor(((slot + valid_times[0]) % slots_per_hour) / 4);
+		let hour = Math.floor(((slot + valid_times[0]) % slots_per_day) / slots_per_hour);
+		console.log(slot + " " + hour);
 		if(hour > 12) {
 			return (hour - 12) + minutes + " PM"
 		}
@@ -81,43 +74,55 @@
 		}
 	}
 
-	function timeblock(){
-		for (let i = start_time; i < end_time+1; i ++) {
-			available_times[valid_times[i]] = true;
-		}
+	function timeblock(val){
+		return () => {
+			for (let i = start_time; i < end_time+1; i ++) {
+				available_times[valid_times[i]] = val;
+			}
+		}	
 	}
 </script>
 
-<main on:mouseup={() => {dragging = 0;}}>
+<div class="main" on:mouseup={() => {dragging = 0;}}>
+	<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
 	<div class="container">
-		<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
-		<div class="timeblock">
-			<h3>Select Available Time Block</h3>
-			<div>
-				<h3>Start Time</h3>
-				<!-- {start_time} -->
-				<Selector {valid_times} bind:curr_slot={start_time}/>
+		<div class="time-block">
+			<h2>Mark Time Block</h2>
+			<div class="block-selectors">
+				<div>
+					<h4>Start Time</h4>
+					<Selector {valid_times} bind:curr_slot={start_time}/>
+				</div>
+				<p style="margin-top: 54%">to</p>
+				<div>
+					<h4>End Time</h4>
+					<Selector {valid_times} bind:curr_slot={end_time}/>
+				</div>
 			</div>
-			<div>
-				<h3>End Time</h3>
-				<!-- {end_time} -->
-				<Selector {valid_times} bind:curr_slot={end_time}/>
-			</div>
-			<div>
-				<button on:click={timeblock}>Add Time Block</button>
-			</div>
-		</div>
-		<h2 class="select-prompt">Select Availability</h2>
-
-		<div class="selector">
-			<Selector {valid_times} bind:curr_slot={curr_slot}/>
-			<div>
-				<button class="{available_times[curr_selection] ? 'enabled' : 'disabled'}" on:click={() => {available_times[curr_selection] = !available_times[curr_selection];}}>{available_times[curr_selection] ? "Available": "Unavailable"}</button>
+			<div class="block-buttons">
+				<button style="background-color:#3581B8; color:white" on:click={timeblock(true)}>Mark Available</button>
+				<button style="background-color:#F3F8F2" on:click={timeblock(false)}>Mark Unavailable</button>
 			</div>
 		</div>
 
-		<h3 class="timeSlot">Time Slots Selected</h3>
-		<div class="selectedTimes">
+		<div class="selector-prompt">
+			<div style="margin:2%">
+				<h2 style="margin:0">Mark Individual Slots</h2>
+				<h5 style="margin:0">Click Button to Toggle</h5>
+			</div>
+			<div class="selector">
+				<Selector {valid_times} bind:curr_slot={curr_slot}/>
+				<div>
+					<button class="{available_times[curr_selection] ? 'enabled' : 'disabled'}" on:click={() => {available_times[curr_selection] = !available_times[curr_selection];}}>{available_times[curr_selection] ? "Available": "Unavailable"}</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="selected-times">
+			<div style="margin:2%">
+				<h3 style="margin:0">Time Slots Selected</h3>
+				<h5 style="margin:0">(Click / Drag to toggle times in this display)</h5>
+			</div>
 			<table>
 				<tr>
 					<td></td>
@@ -147,53 +152,68 @@
 				{/each}
 			</table>
 		</div>
-
-		<div class="bottom-buttons">
-			<button on:click={finish}>Submit</button>
-		</div>
-			
 	</div>
-</main>
+	<div class="bottom-buttons">
+		<button on:click={finish}>Submit</button>
+	</div>
+</div>
 	
 <style>
-	.container{
-		background-color: #EBE9E9;
+	.main{
 		position: relative;
     	overflow: auto;
 		user-select: none;
-	}
-	.timeblock{
-		display:inline-block;
+		text-align: center;
 	}
 
-	.select-prompt {
-		position: absolute;
-		top: 30%; 
-		border-radius: 20px;
-		left: 45%; 
-		transform: translateX(-50%);
+	.container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		margin-left: 8%;
 	}
+
+	.block-selectors {
+		display: flex;
+		flex-direction: row;
+		gap: 1em;
+	}
+
+	.block-buttons {
+		margin-left: 10px;
+	}
+
+	.block-buttons > button {
+		align-items: center;
+		justify-content: center;
+		margin: 10px;
+	}
+
+	.selector-prompt {
+		justify-content: center;
+        align-items: center;
+        width: 40%;
+        display: flex;
+		flex-direction: column;
+    }
 
 	.selector {
-		position: absolute;
-		display: inline-block;
-		top: 40%; 
-		left: 50%; 
-		transform: translateX(-50%);
-        justify-content: center;
-        width: 30%;
-        display: flex;
-    }
+		display: flex;
+		flex-direction: row;
+	}
 
 	.enabled {
         background-color: #3581B8;
 		color: white;
         width: 100px;
+		margin-top: 93%;
     }
 
     .disabled {
         background-color: #F3F8F2;
         width: 100px;
+		margin-top: 93%;
     }
 
 	.slot-toggle,
@@ -206,23 +226,11 @@
 		height: 100%;
 		border-radius: 0;
 	}
-	.timeSlot{
-		position: absolute;
-		display: inline-block;
-		top: 6%; 
-		left: 60%; 
-		transform: translateX(100%);
-	}
-	.selectedTimes{
-		position: absolute;
-		display: inline-block;
-		top: 13.5%; 
-		left: 50%; 
-		transform: translateX(50%);
-	}
-	/* .block{
 
-	} */
+	.selected-times{
+		display: flex;
+		flex-direction: column;
+	}
 
 	table {
 		border-collapse: collapse;
@@ -268,24 +276,10 @@
 	}
 
 	.selected {
-		position: relative;
 		border: 3px solid #FCB07E ;
 	}
 
 	.bottom-buttons {
-		padding-top: 100px;
-		padding-bottom: 30px;
-		width: 50%;
-		left: 50%;
-		transform: translateY(30%);
-		transform: translateX(50%);
-	}
-
-	.submit {
-		float: center;
-	}
-
-	.share {
-		float: right;
+		margin-top: 30px;
 	}
 </style>

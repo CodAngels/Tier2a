@@ -17,7 +17,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let started = true;
+    let started = false;
     let start_time = -1;
     let curr_name = "";
 

@@ -164,6 +164,7 @@
 
 	.enabled {
         background-color: #3581B8;
+		color: white;
         width: 100px;
     }
 

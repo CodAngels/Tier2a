@@ -98,8 +98,9 @@
   	}
 
 	.day-display {
-		width: 100px;
-		max-width: 100px;
+		display: inline-block;
+		width: 85px;
+		max-width: 85px;
 	}
 
   	button {

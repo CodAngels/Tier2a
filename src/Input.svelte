@@ -6,7 +6,6 @@
 	const time_slot = 15;
 	const slots_per_hour = 60 / time_slot
 	const slots_per_day = 24 * slots_per_hour;
-	const gradient = ["#f3f8f2", "#deece2", "#c6e0d5", "#add4cb", "#93c8c5", "#79bbc2", "#60aec0", "#4aa0be", "#3a91bc", "#3581b8"]
 
 	export let valid_times;
 
@@ -93,7 +92,7 @@
 					<h4>Start Time</h4>
 					<Selector {valid_times} bind:curr_slot={start_time}/>
 				</div>
-				<p style="margin-top: 54%">to</p>
+				<p style="margin-top: 160px">to</p>
 				<div>
 					<h4>End Time</h4>
 					<Selector {valid_times} bind:curr_slot={end_time}/>

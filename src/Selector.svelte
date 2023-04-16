@@ -1,3 +1,4 @@
+<!-- This whole file implements the SELECTOR concept -->
 <script>
     export let valid_times;
 	export let curr_slot = 0;

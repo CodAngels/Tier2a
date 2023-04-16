@@ -89,6 +89,7 @@
 <div class="main" on:mouseup={() => {dragging = 0;}}>
 	<h2><center>Meeting Name: CS178 53rd Week Meeting</center></h2>
 	<div class="container">
+		<!-- Time block uses the selector concepts -->
 		<div class="time-block">
 			<h2>Mark Time Block</h2>
 			<div class="block-selectors">
@@ -113,6 +114,7 @@
 				<h2 style="margin:0">Mark Individual Slots</h2>
 				<h5 style="margin:0">Click Button to Toggle</h5>
 			</div>
+			<!-- Selector concept -->
 			<div class="selector">
 				<Selector {valid_times} bind:curr_slot={curr_slot}/>
 				<div>
@@ -121,6 +123,7 @@
 			</div>
 		</div>
 
+		<!-- This div implements the CHART concept -->
 		<div class="selected-times">
 			<div style="margin:2%">
 				<h3 style="margin:0">Time Slots Selected</h3>
@@ -157,6 +160,7 @@
 		</div>
 	</div>
 	<div class="bottom-buttons">
+		<!-- The submit action of the USER concept -->
 		<button on:click={finish}>Submit</button>
 	</div>
 </div>

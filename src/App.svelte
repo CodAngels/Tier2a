@@ -35,6 +35,7 @@
     let start_time = -1;
     let curr_name = "";
 
+    // TIMESLOT CONCEPT, submitted availability keeps track of the cumulative number of available users for each time slot
     let submitted_availability = fill_availability();
 
     function fill_availability() {
@@ -53,6 +54,7 @@
     function start() {
         started = true;
         start_time = Date.now()
+        // USER CONCEPT, curr_name representing the username of the current logged-in user
         if(curr_name == "") {
             curr_name = "empty"
         }
